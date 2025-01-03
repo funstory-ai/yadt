@@ -138,6 +138,10 @@ PDF objects share similarities with data structures found in JSON, YAML, and mod
 
 ## 3. PDF Object Definitions In dpml
 
+### Coordinate system definition
+
+The positive x-axis extends horizontally to the right, while the positive y-axis extends vertically upward, following
+standard mathematical conventions. The unit length along both the x and y axes is defined as 1/72 inch (or 1 point).
 
 ## 4. Useful Information
 
