@@ -71,16 +71,20 @@ class AddDebugInformation:
             y2=page.cropbox.box.y2 - page_height * 0.02,
         )
         page_number_paragraph = self._create_text(
-            page_number_text,
-            BLUE,
-            page_number_box
+            page_number_text, BLUE, page_number_box
         )
         page.pdf_paragraph.append(page_number_paragraph)
 
         new_paragraphs = []
 
         for paragraph in page.pdf_paragraph:
-            if any((x.pdf_same_style_unicode_characters.debug_info for x in paragraph.pdf_paragraph_composition if x.pdf_same_style_unicode_characters)):
+            if any(
+                (
+                    x.pdf_same_style_unicode_characters.debug_info
+                    for x in paragraph.pdf_paragraph_composition
+                    if x.pdf_same_style_unicode_characters
+                )
+            ):
                 continue
             # Create a rectangle box
             rect = self._create_rectangle(paragraph.box, BLUE)

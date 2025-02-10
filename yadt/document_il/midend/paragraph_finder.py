@@ -1,7 +1,7 @@
 import logging
+import random
 import re
 from typing import Literal, Union
-import random
 
 from yadt.document_il import (
     Box,
@@ -12,7 +12,6 @@ from yadt.document_il import (
     PdfParagraphComposition,
 )
 from yadt.document_il.utils.layout_helper import (
-    HEIGHT_NOT_USFUL_CHAR_IN_CHAR,
     Layout,
     add_space_dummy_chars,
     get_char_unicode_string,
@@ -22,12 +21,12 @@ from yadt.translation_config import TranslationConfig
 logger = logging.getLogger(__name__)
 
 # Base58 alphabet (Bitcoin style, without numbers 0, O, I, l)
-BASE58_ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
+BASE58_ALPHABET = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
 
 
 def generate_base58_id(length: int = 5) -> str:
     """Generate a random base58 ID of specified length."""
-    return ''.join(random.choice(BASE58_ALPHABET) for _ in range(length))
+    return "".join(random.choice(BASE58_ALPHABET) for _ in range(length))
 
 
 class ParagraphFinder:
@@ -123,13 +122,13 @@ class ParagraphFinder:
 
         for paragraph in paragraphs:
             self.update_paragraph_data(paragraph, update_unicode=True)
-    
+
     def is_isolated_formula(self, char: PdfCharacter):
         return char.char_unicode in (
-            '(cid:122)',
-            '(cid:123)',
-            '(cid:124)',
-            '(cid:125)',
+            "(cid:122)",
+            "(cid:123)",
+            "(cid:124)",
+            "(cid:125)",
         )
 
     def create_paragraphs(self, page: Page) -> list[PdfParagraph]:
@@ -145,10 +144,7 @@ class ParagraphFinder:
 
         for char in page.pdf_character:
             char_layout = self.get_layout(char, page)
-            if (
-                not self.is_text_layout(char_layout)
-                or self.is_isolated_formula(char)
-            ):
+            if not self.is_text_layout(char_layout) or self.is_isolated_formula(char):
                 skip_chars.append(char)
                 continue
 
@@ -164,8 +160,7 @@ class ParagraphFinder:
                         )
                         paragraphs.append(current_paragraph)
                     else:
-                        current_paragraph.pdf_paragraph_composition.append(
-                            line)
+                        current_paragraph.pdf_paragraph_composition.append(line)
                         self.update_paragraph_data(current_paragraph)
                     current_line_chars = []
 
@@ -181,8 +176,7 @@ class ParagraphFinder:
                 if current_line_chars:
                     line = self.create_line(current_line_chars)
                     if current_paragraph is not None:
-                        current_paragraph.pdf_paragraph_composition.append(
-                            line)
+                        current_paragraph.pdf_paragraph_composition.append(line)
                         self.update_paragraph_data(current_paragraph)
                     else:
                         current_paragraph = PdfParagraph(
@@ -267,13 +261,15 @@ class ParagraphFinder:
             Literal["topleft"], Literal["bottomright"], Literal["middle"]
         ] = "middle",
     ):
-        tl, br, md = [self._get_layout(char, page, mode) for mode in [
-            "topleft", "bottomright", "middle"]]
-        if tl is not None and tl.name == 'isolate_formula':
+        tl, br, md = [
+            self._get_layout(char, page, mode)
+            for mode in ["topleft", "bottomright", "middle"]
+        ]
+        if tl is not None and tl.name == "isolate_formula":
             return tl
-        if br is not None and br.name == 'isolate_formula':
+        if br is not None and br.name == "isolate_formula":
             return br
-        if md is not None and md.name == 'isolate_formula':
+        if md is not None and md.name == "isolate_formula":
             return md
 
         if md is not None:
@@ -398,8 +394,7 @@ class ParagraphFinder:
 
                 prev_line = prev_composition.pdf_line
                 prev_width = prev_line.box.x2 - prev_line.box.x
-                prev_text = "".join(
-                    [c.char_unicode for c in prev_line.pdf_character])
+                prev_text = "".join([c.char_unicode for c in prev_line.pdf_character])
 
                 # 检查是否包含连续的点（至少 20 个）
                 # 如果有至少连续 20 个点，则代表这是目录条目

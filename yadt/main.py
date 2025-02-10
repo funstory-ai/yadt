@@ -5,10 +5,10 @@ import os
 import configargparse
 import tqdm
 from rich.progress import (
-    Progress,
-    TextColumn,
     BarColumn,
     MofNCompleteColumn,
+    Progress,
+    TextColumn,
     TimeElapsedColumn,
     TimeRemainingColumn,
 )
@@ -16,11 +16,11 @@ from rich.progress import (
 import yadt.high_level
 from yadt.const import get_cache_file_path
 from yadt.document_il.translator.translator import (
-    OpenAITranslator,
-    GoogleTranslator,
     BingTranslator,
+    GoogleTranslator,
+    OpenAITranslator,
+    set_translate_rate_limiter,
 )
-from yadt.document_il.translator.translator import set_translate_rate_limiter
 from yadt.translation_config import TranslationConfig  # noqa: E402
 
 logger = logging.getLogger(__name__)
@@ -77,9 +77,7 @@ def create_parser():
         "--pages",
         "-p",
         type=str,
-        help="Pages to translate. "
-        "If not set, translate all pages. "
-        "like: 1,2,1-,-3,3-5",
+        help="Pages to translate. If not set, translate all pages. like: 1,2,1-,-3,3-5",
     )
     translation_params.add_argument(
         "--lang-in",

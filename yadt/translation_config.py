@@ -4,9 +4,7 @@ import tempfile
 import threading
 from typing import Optional
 
-from yadt.const import (
-    CACHE_FOLDER,
-)
+from yadt.const import CACHE_FOLDER
 from yadt.docvision.doclayout import DocLayoutModel
 from yadt.progress_monitor import ProgressMonitor
 

@@ -1,10 +1,10 @@
 import logging
 import statistics
 from functools import lru_cache
+import unicodedata
 from typing import Optional, Union
 
 import pymupdf
-import unicodedata
 
 from yadt.document_il import (
     Box,
@@ -35,9 +35,9 @@ class TypesettingUnit:
         xobj_id: int = None,
         debug_info: bool = False,
     ):
-        assert (
-            sum((x is not None for x in [char, formular, unicode])) == 1
-        ), "Only one of chars and formular can be not None"
+        assert sum((x is not None for x in [char, formular, unicode])) == 1, (
+            "Only one of chars and formular can be not None"
+        )
         self.char = char
         self.formular = formular
         self.unicode = unicode
@@ -50,9 +50,9 @@ class TypesettingUnit:
             assert font_size, "Font size must be provided when unicode is provided"
             assert style, "Style must be provided when unicode is provided"
             assert len(unicode) == 1, "Unicode must be a single character"
-            assert (
-                xobj_id is not None
-            ), "Xobj id must be provided when unicode is provided"
+            assert xobj_id is not None, (
+                "Xobj id must be provided when unicode is provided"
+            )
 
             self.font = font
             self.font_id = font.font_id
@@ -177,8 +177,8 @@ class TypesettingUnit:
         elif self.formular:
             return self.formular.pdf_character
         elif self.unicode:
-            logger.error(
-                "Cannot passthrough unicode. " f"TypesettingUnit: {self}. ")
+            logger.error(f"Cannot passthrough unicode. TypesettingUnit: {self}. ")
+            logger.error(f"Cannot passthrough unicode. TypesettingUnit: {self}. ")
             return []
 
     @property
@@ -192,8 +192,7 @@ class TypesettingUnit:
         elif self.formular:
             return self.formular.box
         elif self.unicode:
-            char_width = self.font.char_lengths(
-                self.unicode, self.font_size)[0]
+            char_width = self.font.char_lengths(self.unicode, self.font_size)[0]
             if self.x is None or self.y is None or self.scale is None:
                 return Box(0, 0, char_width, self.font_size)
             return Box(self.x, self.y, self.x + char_width, self.y + self.font_size)
@@ -259,12 +258,10 @@ class TypesettingUnit:
                         x=x + (rel_x + self.formular.x_offset) * scale,
                         y=y + (rel_y + self.formular.y_offset) * scale,
                         x2=x
-                        + (rel_x + (char.box.x2 - char.box.x) +
-                           self.formular.x_offset)
+                        + (rel_x + (char.box.x2 - char.box.x) + self.formular.x_offset)
                         * scale,
                         y2=y
-                        + (rel_y + (char.box.y2 - char.box.y) +
-                           self.formular.y_offset)
+                        + (rel_y + (char.box.y2 - char.box.y) + self.formular.y_offset)
                         * scale,
                     ),
                     pdf_style=PdfStyle(
@@ -321,15 +318,15 @@ class TypesettingUnit:
         if self.can_passthrough:
             return self.passthrough()
         elif self.unicode:
-            assert (
-                self.x is not None
-            ), "x position must be set, should be set by `relocate`"
-            assert (
-                self.y is not None
-            ), "y position must be set, should be set by `relocate`"
-            assert (
-                self.scale is not None
-            ), "scale must be set, should be set by `relocate`"
+            assert self.x is not None, (
+                "x position must be set, should be set by `relocate`"
+            )
+            assert self.y is not None, (
+                "y position must be set, should be set by `relocate`"
+            )
+            assert self.scale is not None, (
+                "scale must be set, should be set by `relocate`"
+            )
             # 计算字符宽度
             char_width = self.width
 
@@ -355,8 +352,8 @@ class TypesettingUnit:
             )
             return [new_char]
         else:
-            logger.error(
-                "Unknown typesetting unit. " f"TypesettingUnit: {self}. ")
+            logger.error(f"Unknown typesetting unit. TypesettingUnit: {self}. ")
+            logger.error(f"Unknown typesetting unit. TypesettingUnit: {self}. ")
             return []
 
 
@@ -480,8 +477,7 @@ class Typesetting:
         font_size = statistics.mode(font_sizes)
 
         space_width = (
-            self.font_mapper.base_font.char_lengths(
-                "你", font_size * scale)[0] * 0.5
+            self.font_mapper.base_font.char_lengths("你", font_size * scale)[0] * 0.5
         )
 
         # 计算平均行高
@@ -643,6 +639,7 @@ class Typesetting:
             else:
                 font = fonts[font_id]
             return font
+
         for composition in paragraph.pdf_paragraph_composition:
             if composition is None:
                 continue
@@ -690,8 +687,7 @@ class Typesetting:
                     ]
                 )
             elif composition.pdf_formula:
-                result.extend(
-                    [TypesettingUnit(formular=composition.pdf_formula)])
+                result.extend([TypesettingUnit(formular=composition.pdf_formula)])
             else:
                 logger.error(
                     f"Unknown composition type. "

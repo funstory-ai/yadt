@@ -419,9 +419,7 @@ class ILTranslator:
                     placeholder.composition, PdfSameStyleCharacters
                 ) and text.replace(" ", "") == "".join(
                     x.char_unicode for x in placeholder.composition.pdf_character
-                ).replace(
-                    " ", ""
-                ):
+                ).replace(" ", ""):
                     comp = PdfParagraphComposition(
                         pdf_same_style_characters=placeholder.composition
                     )
@@ -500,9 +498,7 @@ class ILTranslator:
                         )
             except Exception as e:
                 logger.exception(
-                    f"Error translating paragraph. "
-                    f"Paragraph: {paragraph}. "
-                    f"Error: {e}. "
+                    f"Error translating paragraph. Paragraph: {paragraph}. Error: {e}. "
                 )
                 # ignore error and continue
                 return

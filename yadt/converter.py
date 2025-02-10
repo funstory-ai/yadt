@@ -1,26 +1,16 @@
 import base64
 import logging
 import re
-from typing import Dict, List, Union, Tuple, Optional
+import unicodedata
+from typing import Dict, List, Optional, Tuple, Union
 
 import numpy as np
-import unicodedata
 from pdfminer.converter import PDFConverter
-from pdfminer.layout import (
-    LTChar,
-    LTFigure,
-    LTLine,
-    LTPage,
-    LTComponent,
-    LTText,
-)
+from pdfminer.layout import LTChar, LTComponent, LTFigure, LTLine, LTPage, LTText
 from pdfminer.pdfcolor import PDFColorSpace
-from pdfminer.pdffont import PDFCIDFont
-from pdfminer.pdffont import PDFFont
-from pdfminer.pdffont import PDFUnicodeNotDefined
+from pdfminer.pdffont import PDFCIDFont, PDFFont, PDFUnicodeNotDefined
 from pdfminer.pdfinterp import PDFGraphicState, PDFResourceManager
-from pdfminer.utils import Matrix
-from pdfminer.utils import apply_matrix_pt, mult_matrix, matrix2str, bbox2str
+from pdfminer.utils import Matrix, apply_matrix_pt, bbox2str, matrix2str, mult_matrix
 from pymupdf import Font
 
 from yadt.document_il.frontend.il_creater import ILCreater
@@ -214,7 +204,7 @@ class TranslateConverter(PDFConverterEx):
         noto: Font = None,
         envs: Dict = None,
         prompt: List = None,
-        il_creater: ILCreater=None,
+        il_creater: ILCreater = None,
     ) -> None:
         super().__init__(rsrcmgr, il_creater)
         self.vfont = vfont

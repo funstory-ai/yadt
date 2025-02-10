@@ -5,7 +5,8 @@ import cv2
 import numpy as np
 from pymupdf import Document
 
-from yadt.document_il.utils.style_helper import *
+from yadt.document_il import il_version_1
+from yadt.document_il.utils.style_helper import GREEN
 from yadt.translation_config import TranslationConfig
 
 logger = logging.getLogger(__name__)
@@ -111,7 +112,6 @@ class LayoutParser:
         with self.translation_config.progress_monitor.stage_start(
             self.stage_name, total
         ) as progress:
-
             # Process pages in batches
             batch_size = 16
             for i in range(0, total, batch_size):

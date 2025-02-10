@@ -3,11 +3,11 @@ import logging
 import re
 import threading
 import time
+import unicodedata
 from abc import ABC
 
 import openai
 import requests
-import unicodedata
 
 from yadt.document_il.translator.cache import TranslationCache
 
@@ -86,8 +86,7 @@ class BaseTranslator(ABC):
     def __del__(self):
         logger.info(f"{self.name} translate call count: {self.translate_call_count}")
         logger.info(
-            f"{self.name} translate cache call count"
-            f": {self.translate_cache_call_count}"
+            f"{self.name} translate cache call count: {self.translate_cache_call_count}"
         )
 
     def add_cache_impact_parameters(self, k: str, v):

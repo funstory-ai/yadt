@@ -27,8 +27,7 @@ class ILCreater:
         self.non_stroking_color_space_name = None
         self.passthrough_per_char_instruction: list[tuple[str, str]] = []
         self.translation_config = translation_config
-        self.passthrough_per_char_instruction_stack: list[list[tuple[str, str]]] = [
-        ]
+        self.passthrough_per_char_instruction_stack: list[list[tuple[str, str]]] = []
         self.xobj_id = 0
         self.xobj_inc = 0
         self.xobj_map: dict[int, il_version_1.PdfXobject] = {}
@@ -42,8 +41,7 @@ class ILCreater:
 
     def on_passthrough_per_char(self, operator: str, args: list[str]):
         if not self.is_passthrough_per_char_operation(operator):
-            logger.error(
-                "Unknown passthrough_per_char operation: %s", operator)
+            logger.error("Unknown passthrough_per_char operation: %s", operator)
             return
         # logger.debug("xobj_id: %d, on_passthrough_per_char: %s ( %s )", self.xobj_id, operator, args)
         args = [self.parse_arg(arg) for arg in args]
@@ -52,8 +50,7 @@ class ILCreater:
             if op == operator:
                 self.passthrough_per_char_instruction.remove(value)
                 break
-        self.passthrough_per_char_instruction.append(
-            (operator, " ".join(args)))
+        self.passthrough_per_char_instruction.append((operator, " ".join(args)))
         pass
 
     def remove_latest_passthrough_per_char_instruction(self):
@@ -157,8 +154,7 @@ class ILCreater:
         x1: float | int,
         y1: float | int,
     ):
-        box = il_version_1.Box(x=float(x0), y=float(y0),
-                               x2=float(x1), y2=float(y1))
+        box = il_version_1.Box(x=float(x0), y=float(y0), x2=float(x1), y2=float(y1))
         self.current_page.cropbox = il_version_1.Cropbox(box=box)
 
     def on_page_media_box(
@@ -168,8 +164,7 @@ class ILCreater:
         x1: float | int,
         y1: float | int,
     ):
-        box = il_version_1.Box(x=float(x0), y=float(y0),
-                               x2=float(x1), y2=float(y1))
+        box = il_version_1.Box(x=float(x0), y=float(y0), x2=float(x1), y2=float(y1))
         self.current_page.mediabox = il_version_1.Mediabox(box=box)
 
     def on_page_number(self, page_number: int):
@@ -178,8 +173,7 @@ class ILCreater:
         self.current_page.page_number = page_number
 
     def on_page_base_operation(self, operation: str):
-        self.current_page.base_operations = il_version_1.BaseOperations(
-            value=operation)
+        self.current_page.base_operations = il_version_1.BaseOperations(value=operation)
 
     def on_page_resource_font(self, font: PDFFont, xref_id: int, font_id: str):
         font_name = font.fontname
@@ -187,8 +181,7 @@ class ILCreater:
             try:
                 font_name = font_name.decode("utf-8")
             except UnicodeDecodeError:
-                font_name = "BASE64:" + \
-                    base64.b64encode(font_name).decode("utf-8")
+                font_name = "BASE64:" + base64.b64encode(font_name).decode("utf-8")
         encoding_length = 1
         if isinstance(font, PDFCIDFont):
             try:
@@ -200,8 +193,7 @@ class ILCreater:
                 elif encoding == "/Identity-V":
                     encoding_length = 2
                 else:
-                    _, to_unicode_id = self.mupdf.xref_get_key(
-                        xref_id, "ToUnicode")
+                    _, to_unicode_id = self.mupdf.xref_get_key(xref_id, "ToUnicode")
                     to_unicode_bytes = self.mupdf.xref_stream(
                         int(to_unicode_id.split(" ")[0])
                     )
@@ -209,19 +201,18 @@ class ILCreater:
                         b"begincodespacerange\n?.*<(\\d+?)>.*", to_unicode_bytes
                     ).group(1)
                     encoding_length = len(range) // 2
-            except:
+            except Exception:
                 if max(font.unicode_map.cid2unichr.keys()) > 255:
                     encoding_length = 2
                 else:
                     encoding_length = 1
         try:
-            mupdf_font = pymupdf.Font(
-                fontbuffer=self.mupdf.extract_font(xref_id)[3])
+            mupdf_font = pymupdf.Font(fontbuffer=self.mupdf.extract_font(xref_id)[3])
             bold = mupdf_font.is_bold
             italic = mupdf_font.is_italic
             monospaced = mupdf_font.is_monospaced
             serif = mupdf_font.is_serif
-        except:
+        except Exception:
             bold = None
             italic = None
             monospaced = None
@@ -275,17 +266,15 @@ class ILCreater:
         gs = self.create_graphic_state(char.graphicstate)
         # Get font from current page or xobject
         font = None
-        for pdf_font in (self.xobj_map.get(self.xobj_id,
-                                           self.current_page).pdf_font):
+        for pdf_font in self.xobj_map.get(self.xobj_id, self.current_page).pdf_font:
             if pdf_font.font_id == char.aw_font_id:
                 font = pdf_font
                 break
 
         # Get descent from font
         descent = 0
-        if font and hasattr(font, 'descent'):
+        if font and hasattr(font, "descent"):
             descent = font.descent * char.size / 1000
-
 
         char_id = char.cid
         char_unicode = char.get_text()
@@ -298,7 +287,7 @@ class ILCreater:
                 x=char.bbox[0] - descent,
                 y=char.bbox[1],
                 x2=char.bbox[2] - descent,
-                y2=char.bbox[3]
+                y2=char.bbox[3],
             )
         else:
             vertical = False
@@ -307,7 +296,7 @@ class ILCreater:
                 x=char.bbox[0],
                 y=char.bbox[1] + descent,
                 x2=char.bbox[2],
-                y2=char.bbox[3] + descent
+                y2=char.bbox[3] + descent,
             )
         pdf_style = il_version_1.PdfStyle(
             font_id=char.aw_font_id,

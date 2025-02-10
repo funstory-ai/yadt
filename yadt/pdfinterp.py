@@ -7,36 +7,20 @@ from pdfminer.pdfcolor import PREDEFINED_COLORSPACE, PDFColorSpace
 from pdfminer.pdfdevice import PDFDevice, PDFTextSeq
 from pdfminer.pdffont import PDFFont
 from pdfminer.pdfinterp import (
-    PDFPageInterpreter,
-    PDFResourceManager,
-    PDFContentParser,
-    PDFInterpreterError,
-    Color,
-    PDFStackT,
     LITERAL_FORM,
     LITERAL_IMAGE,
+    Color,
+    PDFContentParser,
+    PDFInterpreterError,
+    PDFPageInterpreter,
+    PDFResourceManager,
+    PDFStackT,
 )
 from pdfminer.pdfpage import PDFPage
-from pdfminer.pdftypes import (
-    PDFObjRef,
-    dict_value,
-    list_value,
-    resolve1,
-    stream_value,
-)
+from pdfminer.pdftypes import PDFObjRef, dict_value, list_value, resolve1, stream_value
 from pdfminer.psexceptions import PSEOF
-from pdfminer.psparser import (
-    PSKeyword,
-    keyword_name,
-    literal_name,
-)
-from pdfminer.utils import (
-    MATRIX_IDENTITY,
-    Matrix,
-    Rect,
-    mult_matrix,
-    apply_matrix_pt,
-)
+from pdfminer.psparser import PSKeyword, keyword_name, literal_name
+from pdfminer.utils import MATRIX_IDENTITY, Matrix, Rect, apply_matrix_pt, mult_matrix
 
 from yadt.document_il.frontend.il_creater import ILCreater
 

@@ -1,0 +1,12 @@
+files: '^.*\.py$'
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    # Ruff version.
+    rev: v0.9.5
+    hooks:
+      # Run the linter.
+      - id: ruff
+        args: [ "--fix",
+                "--ignore=E203,E261,E501,E741,F841" ]
+      # Run the formatter.
+      - id: ruff-format

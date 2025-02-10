@@ -1,7 +1,7 @@
 import logging
+import math
 from typing import List, Optional, Union
 
-import math
 from pymupdf import Font
 
 from yadt.document_il import GraphicState

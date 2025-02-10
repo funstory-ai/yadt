@@ -1,7 +1,6 @@
 import base64
-import re
-
 import math
+import re
 import unicodedata
 
 from yadt.document_il.il_version_1 import (
@@ -100,8 +99,7 @@ class StylesAndFormulas:
                         or char.vertical  # 垂直字体
                         or (
                             #   如果是程序添加的dummy空格
-                            char.char_unicode is None
-                            and in_formula_state
+                            char.char_unicode is None and in_formula_state
                         )
                     )
 
@@ -159,9 +157,8 @@ class StylesAndFormulas:
 
             new_compositions = []
             for composition in paragraph.pdf_paragraph_composition:
-                if (
-                    composition.pdf_formula is not None
-                    and self.is_translatable_formula(composition.pdf_formula)
+                if composition.pdf_formula is not None and self.is_translatable_formula(
+                    composition.pdf_formula
                 ):
                     # 将可翻译公式转换为普通文本行
                     new_line = PdfLine(

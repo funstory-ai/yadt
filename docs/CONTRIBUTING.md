@@ -40,10 +40,11 @@ Please pay special attention to:
 
 
 1. Fork this repository and clone it locally.
-2. Create a new branch and make code changes on that branch. `git checkout -b feature/<feature-name>`
-3. Perform development and ensure the code meets the requirements.
+2. Use `doc/deploy.sh` to set up the development  environment.
+3. Create a new branch and make code changes on that branch. `git checkout -b feature/<feature-name>`
+4. Perform development and ensure the code meets the requirements.
 
-4. Commit your changes to your new branch.
+5. Commit your changes to your new branch.
 
 ```
 git add .
