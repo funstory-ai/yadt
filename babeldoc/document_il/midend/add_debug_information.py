@@ -4,6 +4,7 @@ import babeldoc.document_il.il_version_1 as il_version_1
 from babeldoc.document_il import GraphicState
 from babeldoc.document_il.utils.style_helper import BLUE
 from babeldoc.document_il.utils.style_helper import ORANGE
+from babeldoc.document_il.utils.style_helper import PURPLE
 from babeldoc.document_il.utils.style_helper import YELLOW
 from babeldoc.translation_config import TranslationConfig
 
@@ -117,6 +118,24 @@ class AddDebugInformation:
                         self._create_rectangle(
                             composition.pdf_formula.box,
                             ORANGE,
+                        ),
+                    )
+
+                if composition.pdf_line:
+                    logger.info(
+                        f"line: {composition.pdf_line.box.x} {composition.pdf_line.box.y} {composition.pdf_line.box.x2} {composition.pdf_line.box.y2}",
+                    )
+                    new_paragraphs.append(
+                        self._create_text(
+                            "line",
+                            PURPLE,
+                            composition.pdf_line.box,
+                        ),
+                    )
+                    page.pdf_rectangle.append(
+                        self._create_rectangle(
+                            composition.pdf_line.box,
+                            PURPLE,
                         ),
                     )
 

@@ -367,6 +367,13 @@ def do_translate(pm, translation_config):
                 docs,
                 translation_config.get_working_file_path("paragraph_finder.json"),
             )
+        if translation_config.debug:
+            AddDebugInformation(translation_config).process(docs)
+            xml_converter.write_json(
+                docs,
+                translation_config.get_working_file_path("add_debug_information.json"),
+            )
+
         StylesAndFormulas(translation_config).process(docs)
         logger.debug(f"finish styles and formulas from {temp_pdf_path}")
         if translation_config.debug:
@@ -388,13 +395,6 @@ def do_translate(pm, translation_config):
             xml_converter.write_json(
                 docs,
                 translation_config.get_working_file_path("il_translated.json"),
-            )
-
-        if translation_config.debug:
-            AddDebugInformation(translation_config).process(docs)
-            xml_converter.write_json(
-                docs,
-                translation_config.get_working_file_path("add_debug_information.json"),
             )
 
         Typesetting(translation_config).typsetting_document(docs)
