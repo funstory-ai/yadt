@@ -111,11 +111,8 @@ class ParagraphFinder:
             self.process_paragraph_spacing(paragraph)
             self.update_paragraph_data(paragraph)
 
-        # 第三步：计算所有行宽度的中位数
-        median_width = self.calculate_median_line_width(paragraphs)
-
         # 第四步：处理独立段落
-        self.process_independent_paragraphs(paragraphs, median_width)
+        self.process_independent_paragraphs(paragraphs)
 
         for paragraph in paragraphs:
             self.update_paragraph_data(paragraph, update_unicode=True)
@@ -376,14 +373,28 @@ class ParagraphFinder:
     def process_independent_paragraphs(
         self,
         paragraphs: list[PdfParagraph],
-        median_width: float,
     ):
         i = 0
         while i < len(paragraphs):
             paragraph = paragraphs[i]
-            if len(paragraph.pdf_paragraph_composition) <= 1:  # 跳过只有一行的段落
+            if (
+                len(paragraph.pdf_paragraph_composition) <= 1
+            ):  # Skip single-line paragraphs
                 i += 1
                 continue
+
+            # Calculate average line width for this paragraph
+            paragraph_line_widths = []
+            for comp in paragraph.pdf_paragraph_composition:
+                if comp.pdf_line:
+                    line_width = comp.pdf_line.box.x2 - comp.pdf_line.box.x
+                    paragraph_line_widths.append(line_width)
+
+            if not paragraph_line_widths:
+                i += 1
+                continue
+
+            avg_width = max(paragraph_line_widths)
 
             j = 1
             while j < len(paragraph.pdf_paragraph_composition):
@@ -396,56 +407,55 @@ class ParagraphFinder:
                 prev_width = prev_line.box.x2 - prev_line.box.x
                 prev_text = "".join([c.char_unicode for c in prev_line.pdf_character])
 
-                # 检查是否包含连续的点（至少 20 个）
-                # 如果有至少连续 20 个点，则代表这是目录条目
+                # Check for table of contents entries (consecutive dots)
                 if re.search(r"\.{20,}", prev_text):
-                    # 创建新的段落
+                    # Create new paragraph
                     new_paragraph = PdfParagraph(
-                        box=Box(0, 0, 0, 0),  # 临时边界框
+                        box=Box(0, 0, 0, 0),  # temporary bounding box
                         pdf_paragraph_composition=(
                             paragraph.pdf_paragraph_composition[j:]
                         ),
                         unicode="",
                         debug_id=generate_base58_id(),
                     )
-                    # 更新原段落
+                    # Update original paragraph
                     paragraph.pdf_paragraph_composition = (
                         paragraph.pdf_paragraph_composition[:j]
                     )
 
-                    # 更新两个段落的数据
+                    # Update data for both paragraphs
                     self.update_paragraph_data(paragraph)
                     self.update_paragraph_data(new_paragraph)
 
-                    # 在原段落后插入新段落
+                    # Insert new paragraph after the original one
                     paragraphs.insert(i + 1, new_paragraph)
                     break
 
-                # 如果前一行宽度小于中位数的一半，将当前行及后续行分割成新段落
+                # If previous line width is significantly shorter than the average width of this paragraph
                 if (
                     self.translation_config.split_short_lines
                     and prev_width
-                    < median_width * self.translation_config.short_line_split_factor
+                    < avg_width * self.translation_config.short_line_split_factor
                 ):
-                    # 创建新的段落
+                    # Create new paragraph
                     new_paragraph = PdfParagraph(
-                        box=Box(0, 0, 0, 0),  # 临时边界框
+                        box=Box(0, 0, 0, 0),  # temporary bounding box
                         pdf_paragraph_composition=(
                             paragraph.pdf_paragraph_composition[j:]
                         ),
                         unicode="",
                         debug_id=generate_base58_id(),
                     )
-                    # 更新原段落
+                    # Update original paragraph
                     paragraph.pdf_paragraph_composition = (
                         paragraph.pdf_paragraph_composition[:j]
                     )
 
-                    # 更新两个段落的数据
+                    # Update data for both paragraphs
                     self.update_paragraph_data(paragraph)
                     self.update_paragraph_data(new_paragraph)
 
-                    # 在原段落后插入新段落
+                    # Insert new paragraph after the original one
                     paragraphs.insert(i + 1, new_paragraph)
                     break
                 j += 1

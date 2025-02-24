@@ -26,7 +26,7 @@ class TranslationConfig:
         formular_font_pattern: str | None = None,
         formular_char_pattern: str | None = None,
         qps: int = 1,
-        split_short_lines: bool = False,  # 是否将比较短的行强制切分成不同段落，此功能可能会导致糟糕的排版&bug
+        split_short_lines: bool = True,  # 是否将比较短的行强制切分成不同段落，此功能可能会导致糟糕的排版&bug
         short_line_split_factor: float = 0.8,  # 切分阈值系数。实际阈值为当前页所有行长度中位数*此系数
         use_rich_pbar: bool = True,  # 是否使用 rich 进度条
         progress_monitor: ProgressMonitor | None = None,  # progress_monitor
